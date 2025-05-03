@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Essora Trivia</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e8f5e9; /* Light green background */
+      color: #2e7d32; /* Dark green text */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-image: url('https://www.transparenttextures.com/patterns/asfalt.png'); /* Light leaf texture background */
+      background-size: cover;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 80%;
+      max-width: 600px;
+      background-color: rgba(255, 255, 255, 0.8); /* Slight transparency */
+      border: 2px solid #2e7d32;
+    }
+    h1 {
+      font-size: 36px;
+      color: #388e3c;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .question {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #388e3c;
+    }
+    .answer-btn {
+      background-color: #81c784; /* Green background */
+      color: white;
+      padding: 12px;
+      margin: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 18px;
+    }
+    .answer-btn:hover {
+      background-color: #66bb6a; /* Darker green when hovered */
+    }
+    .hidden {
+      display: none;
+    }
+    #start-btn {
+      background-color: #4caf50; /* Light green */
+    }
+    #start-btn:hover {
+      background-color: #388e3c; /* Dark green */
+    }
+    #score-board {
+      font-size: 20px;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #388e3c;
+    }
+    .animation {
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    .leaf-icon {
+      width: 30px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="start-screen" class="animation">
+      <h1>Welcome to Essora Trivia!</h1>
+      <p>Test your knowledge about Essora and the nature behind our products.</p>
+      <button id="start-btn" class="answer-btn">Start to Play</button>
+    </div>
+    <div id="game-screen" class="hidden">
+      <div id="question-container">
+        <p id="question" class="question"></p>
+        <button class="answer-btn" onclick="answer(0)" id="answer0"></button>
+        <button class="answer-btn" onclick="answer(1)" id="answer1"></button>
+        <button class="answer-btn" onclick="answer(2)" id="answer2"></button>
+        <button class="answer-btn" onclick="answer(3)" id="answer3"></button>
+      </div>
+    </div>
+    <div id="end-screen" class="hidden">
+      <h2>Thank you for playing!</h2>
+      <p id="score-board"></p>
+      <img src="https://img.icons8.com/ios/452/leaf.png" class="leaf-icon" alt="Leaf Icon">
+      <button onclick="restartGame()" class="answer-btn">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questions = [
+      {
+        question: "What year was Essora founded?",
+        answers: ["2023", "2024", "2025", "2026"],
+        correctAnswer: 2
+      },
+      {
+        question: "Which extract in Essora's products helps to heal skin after insect bites?",
+        answers: ["Lemon Extract", "Eucalyptus Extract", "Lemongrass Extract", "Lavender Extract"],
+        correctAnswer: 1
+      },
+      {
+        question: "Which Essora product contains SPF 30?",
+        answers: ["Essora Glow", "Essora Bliss", "Essora Essence", "Essora Spark"],
+        correctAnswer: 1
+      },
+      {
+        question: "What is Essora's commitment in terms of packaging?",
+        answers: ["Plastic packaging", "Biodegradable packaging", "Glass packaging", "No packaging at all"],
+        correctAnswer: 1
+      },
+      {
+        question: "What is the primary ingredient in Essora's insect repellent balm?",
+        answers: ["Coconut Oil", "Beeswax", "Eucalyptus Extract", "Olive Oil"],
+        correctAnswer: 2
+      },
+      {
+        question: "Which of the following is a benefit of Lemongrass Extract?",
+        answers: ["Keeps insects away", "Boosts energy", "Reduces inflammation", "Increases UV protection"],
+        correctAnswer: 0
+      },
+      {
+        question: "Essora's products are made using natural ingredients from which type of sources?",
+        answers: ["Synthetic chemicals", "Ethically sourced natural ingredients", "Artificial preservatives", "GMOs"],
+        correctAnswer: 1
+      },
+      {
+        question: "Which of the following products helps to create a peaceful, bug-free environment indoors?",
+        answers: ["Essora Glow", "Essora Bliss", "Essora Essence", "Essora Spark"],
+        correctAnswer: 2
+      },
+      {
+        question: "What type of business is Essora?",
+        answers: ["Insect repellent brand", "Fashion brand", "Food and beverage brand", "Tech startup"],
+        correctAnswer: 0
+      },
+      {
+        question: "What is the main purpose of Essora's Vision?",
+        answers: ["To increase profits", "To provide sustainable insect protection", "To sell more products", "To expand to every country"],
+        correctAnswer: 1
+      }
+    ];
+
+    const startButton = document.getElementById('start-btn');
+    const gameScreen = document.getElementById('game-screen');
+    const startScreen = document.getElementById('start-screen');
+    const endScreen = document.getElementById('end-screen');
+    const questionContainer = document.getElementById('question-container');
+    const questionElement = document.getElementById('question');
+    const scoreBoard = document.getElementById('score-board');
+    
+    startButton.addEventListener('click', startGame);
+
+    function startGame() {
+      startScreen.classList.add('hidden');
+      gameScreen.classList.remove('hidden');
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      const currentQuestion = questions[currentQuestionIndex];
+      questionElement.textContent = currentQuestion.question;
+      currentQuestion.answers.forEach((answer, index) => {
+        document.getElementById(`answer${index}`).textContent = answer;
+      });
+    }
+
+    function answer(selectedAnswer) {
+      const currentQuestion = questions[currentQuestionIndex];
+      if (selectedAnswer === currentQuestion.correctAnswer) {
+        score++;
+      }
+      currentQuestionIndex++;
+
+      if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      gameScreen.classList.add('hidden');
+      endScreen.classList.remove('hidden');
+      scoreBoard.textContent = `You scored ${score} out of ${questions.length}`;
+    }
+
+    function restartGame() {
+      currentQuestionIndex = 0;
+      score = 0;
+      endScreen.classList.add('hidden');
+      startScreen.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
